@@ -289,8 +289,8 @@ def cohort_insights():
         if df.empty:
             return jsonify({'error': 'No cohort data available'}), 404
 
-        # Make predictions for sample if needed
-        sample_size = min(1000, len(df))
+        # Make predictions for sample if needed (reduced for performance)
+        sample_size = min(500, len(df))  # Reduced from 1000 to 500
         df_sample = df.sample(n=sample_size, random_state=42)
 
         predictions_data = []
