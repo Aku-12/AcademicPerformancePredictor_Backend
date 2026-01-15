@@ -25,6 +25,7 @@ ENV/
 ml/saved_models/*.joblib
 ml/data/processed/
 ml/data/splits/
+ml/data/raw/
 *.h5
 *.pkl
 *.pickle
