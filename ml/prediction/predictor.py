@@ -82,6 +82,12 @@ class PredictionService:
         filled_data.update(student_data)  # Override with provided values
         return filled_data
 
+    def _validate_age(self, student_data):
+        """Validate age is within 18-25 range."""
+        age = student_data.get('current_age', self.DEFAULT_VALUES['current_age'])
+        if age < 18 or age > 25:
+            raise ValueError(f"Age must be between 18 and 25. Got: {age}")
+
     def is_ready(self):
         """Check if model is loaded and ready."""
         return (self.model is not None and
@@ -93,6 +99,9 @@ class PredictionService:
         """Predict GPA for a single student."""
         if not self.is_ready():
             raise ValueError("Model not loaded. Please train the model first.")
+
+        # Validate age range (18-25)
+        self._validate_age(student_data)
 
         # Fill missing fields with defaults
         filled_data = self._fill_defaults(student_data)
@@ -113,6 +122,13 @@ class PredictionService:
         """Predict GPA for multiple students."""
         if not self.is_ready():
             raise ValueError("Model not loaded. Please train the model first.")
+
+        # Validate age range (18-25) for all students
+        for i, student in enumerate(students_data):
+            try:
+                self._validate_age(student)
+            except ValueError as e:
+                raise ValueError(f"Student {i+1}: {str(e)}")
 
         # Fill missing fields with defaults for each student
         filled_data = [self._fill_defaults(student) for student in students_data]
